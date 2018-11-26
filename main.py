@@ -85,8 +85,8 @@ if __name__ == "__main__":
             return (features, y)
 
         build_batch = (BuildBatch(BATCH_SIZE)
-                       .by(0, 'vector', float)
-                       .by(1, 'number', float))
+                       .input(0, 'vector', float)
+                       .output(1, 'number', float))
 
         if NET_ARCH == 'deep_net':
             model = deep_net(input_shape=(feature_dim,))
