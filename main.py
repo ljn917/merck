@@ -1,3 +1,4 @@
+import tensorflow as tf
 from nutsflow import *
 from nutsml import *
 import matplotlib.pyplot as plt
