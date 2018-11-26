@@ -6,15 +6,14 @@ re-implementation of the paper (the recommended model):
 `Ma, J., Sheridan, R.P., Liaw, A., Dahl, G.E. and Svetnik, V., 2015. Deep neural nets as a method for quantitative structure–activity relationships. Journal of chemical information and modeling, 55(2), pp.263-274.`
 
 ## Installation
-The code was tested in _Keras_ with _Tensorflow_ backend. 
-The packages needed are listed in the `requirements.txt`
+The code was tested in _Keras_ with _Tensorflow_ backend. Python 3 is required.
 
 ### Installing python virtual environment and requirements
  ```
  pip install virtualenv
  virtualenv --no-site-packages vkeras
  source vkeras/bin/activate
- pip install -r path/to/requirements.txt
+ pip install pandas numpy keras tensorflow nutsflow nutsml matplotlib
 
  ```
  
