@@ -8,6 +8,7 @@ import pandas as pd
 from keras.optimizers import Adam, sgd
 import sys
 
+from config_mod import *
 
 # Global variables
 BATCH_SIZE = 64
@@ -15,12 +16,7 @@ EPOCH = 200
 VAL_FREQ = 5
 NET_ARCH = 'merck_net'
 
-data_root = '/home/truwan/DATA/merck/preprocessed/'
-
-dataset_names = ['CB1', 'DPP4', 'HIVINT', 'HIVPROT', 'METAB', 'NK1', 'OX1', 'PGP', 'PPB', 'RAT_F',
-                 'TDI', 'THROMBIN', 'OX2', '3A4', 'LOGD']
-
-dataset_stats = pd.read_csv(data_root + 'dataset_stats.csv', header=None, names=['mean', 'std'], index_col=0)
+dataset_stats = pd.read_csv(save_root + 'dataset_stats.csv', header=None, names=['mean', 'std'], index_col=0)
 
 
 def Rsqured_np(x, y):
@@ -64,9 +60,9 @@ if __name__ == "__main__":
         test_stat_hold = list()
         best_RMSE = float("inf")
 
-        print 'Training on Data-set: ' + dataset_name
-        test_file = data_root + dataset_name + '_test_disguised.csv'
-        train_file = data_root + dataset_name + '_training_disguised.csv'
+        print('Training on Data-set: ' + dataset_name)
+        test_file = save_root + dataset_name + '_test_disguised.csv'
+        train_file = save_root + dataset_name + '_training_disguised.csv'
 
         data_train = ReadPandas(train_file, dropnan=True)
         Act_inx = data_train.dataframe.columns.get_loc('Act')
@@ -129,15 +125,15 @@ if __name__ == "__main__":
 
                 RMSE_e = RMSE_np(preds, trues)
                 Rsquared_e = Rsqured_np(preds, trues)
-                print 'Dataset ' + dataset_name + ' Epoch ' + str(e), ' : RMSE = ' + str(
-                    RMSE_e) + ', R-Squared = ' + str(Rsquared_e)
+                print('Dataset ' + dataset_name + ' Epoch ' + str(e), ' : RMSE = ' + str(
+                    RMSE_e) + ', R-Squared = ' + str(Rsquared_e))
                 test_stat_hold.append(('Epoch ' + str(e), RMSE_e, Rsquared_e))
 
                 if RMSE_e < best_RMSE:
                     model.save_weights('./outputs/weights_' + dataset_name + '.h5')
                     best_RMSE = RMSE_e
 
-        print "Calculating errors for test set ..."
+        print("Calculating errors for test set ...")
         model.load_weights('./outputs/weights_' + dataset_name + '.h5')
         trues = data_test >> GetCols(Act_inx) >> Map(scale_activators) >> Collect()
 
@@ -146,7 +142,7 @@ if __name__ == "__main__":
 
         RMSE_e = RMSE_np(preds, trues)
         Rsquared_e = Rsqured_np(preds, trues)
-        print 'Dataset ' + dataset_name + ' Test : RMSE = ' + str(RMSE_e) + ', R-Squared = ' + str(Rsquared_e)
+        print('Dataset ' + dataset_name + ' Test : RMSE = ' + str(RMSE_e) + ', R-Squared = ' + str(Rsquared_e))
         test_stat_hold.append(('Final', RMSE_e, Rsquared_e))
 
         writer = WriteCSV('./outputs/test_errors_' + dataset_name + '.csv')

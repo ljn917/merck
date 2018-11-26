@@ -13,12 +13,9 @@ from nutsflow import *
 from nutsml import *
 import sys
 
-data_root = '/home/truwan/DATA/merck/'
-save_root = '/home/truwan/DATA/merck/preprocessed/'
+from config_mod import *
+
 FEATURE_SCALE = 'log'   # 'uniform'
-
-
-dataset_names = ['3A4', 'CB1', 'DPP4', 'HIVINT', 'HIVPROT', 'LOGD', 'METAB', 'NK1', 'OX1', 'OX2', 'PGP', 'PPB', 'RAT_F', 'TDI', 'THROMBIN']
 
 stat_hold = list() # hold the mean and standard deviation for each data-set
 
@@ -30,13 +27,13 @@ for dataset_name in dataset_names:
     test_filename_save = save_root + dataset_name + '_test_disguised.csv'
     train_filename_save = save_root + dataset_name + '_training_disguised.csv'
 
-    print 'Preprocessing dataset ', dataset_name
+    print('Preprocessing dataset ', dataset_name)
 
     train = pd.read_csv(train_filename)
     test = pd.read_csv(test_filename)
 
-    print len(train.columns.values)
-    print len(test.columns.values)
+    print(len(train.columns.values))
+    print(len(test.columns.values))
 
     train_inx_set = set(train.columns.values)
     test_inx_set = set(test.columns.values)
@@ -51,8 +48,8 @@ for dataset_name in dataset_names:
     train = train[train_inx]
     test = test[test_inx]
 
-    print train.shape
-    print test.shape
+    print(train.shape)
+    print(test.shape)
 
     # Normalize activations
     X = np.asarray(train.Act)
@@ -66,13 +63,13 @@ for dataset_name in dataset_names:
 
     # rescale features
     if FEATURE_SCALE == 'log':
-        train.ix[:, 2:] = np.log(train.ix[:, 2:] + 1)
-        test.ix[:, 2:] = np.log(test.ix[:, 2:] + 1)
+        train.iloc[:, 2:] = np.log(train.iloc[:, 2:] + 1)
+        test.iloc[:, 2:] = np.log(test.iloc[:, 2:] + 1)
 
     elif FEATURE_SCALE == 'uniform':
         max_feature = train.max(axis=0)[2:]
-        train.ix[:, 2:] = train.ix[:, 2:] / max_feature
-        test.ix[:, 2:] = test.ix[:, 2:] / max_feature
+        train.iloc[:, 2:] = train.iloc[:, 2:] / max_feature
+        test.iloc[:, 2:] = test.iloc[:, 2:] / max_feature
     else:
         sys.exit("Feature normalization method not defined correctly, check FEATURE_SCALE. ")
 
@@ -80,7 +77,7 @@ for dataset_name in dataset_names:
     train.to_csv(train_filename_save, index=False)
     test.to_csv(test_filename_save, index=False)
 
-    print 'Done dataset ', dataset_name
+    print('Done dataset ', dataset_name)
 
 writer = WriteCSV(save_root + 'dataset_stats.csv')
 stat_hold >> writer
