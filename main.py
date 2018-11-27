@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 from keras.optimizers import Adam, sgd
 import sys
+import os
 
 from config_mod import *
 
@@ -16,6 +17,12 @@ BATCH_SIZE = 64
 EPOCH = 200
 VAL_FREQ = 5
 NET_ARCH = 'merck_net'
+net_weights_dir = net_weights_root + NET_ARCH + '/'
+
+if not os.path.exists(net_weights_dir):
+    os.makedirs(net_weights_dir)
+elif not os.path.isdir(net_weights_dir):
+    sys.exit('weights output dir: ' + net_weights_dir + ' is not a dir.')
 
 dataset_stats = pd.read_csv(save_root + 'dataset_stats.csv', header=None, names=['mean', 'std'], index_col=0)
 
@@ -131,11 +138,11 @@ if __name__ == "__main__":
                 test_stat_hold.append(('Epoch ' + str(e), RMSE_e, Rsquared_e))
 
                 if RMSE_e < best_RMSE:
-                    model.save_weights('./outputs/weights_' + dataset_name + '.h5')
+                    model.save_weights(net_weights_dir + 'weights_' + dataset_name + '.h5')
                     best_RMSE = RMSE_e
 
         print("Calculating errors for test set ...")
-        model.load_weights('./outputs/weights_' + dataset_name + '.h5')
+        model.load_weights(net_weights_dir + 'weights_' + dataset_name + '.h5')
         trues = data_test >> GetCols(Act_inx) >> Map(scale_activators) >> Collect()
 
         preds = data_test >> Map(organize_features) >> build_batch >> Map(predict_network_batch) >> Flatten() >> Map(
@@ -146,5 +153,5 @@ if __name__ == "__main__":
         print('Dataset ' + dataset_name + ' Test : RMSE = ' + str(RMSE_e) + ', R-Squared = ' + str(Rsquared_e))
         test_stat_hold.append(('Final', RMSE_e, Rsquared_e))
 
-        writer = WriteCSV('./outputs/test_errors_' + dataset_name + '.csv')
+        writer = WriteCSV(net_weights_dir + 'test_errors_' + dataset_name + '.csv')
         test_stat_hold >> writer
