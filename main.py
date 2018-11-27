@@ -157,5 +157,5 @@ if __name__ == "__main__":
         print('Dataset ' + dataset_name + ' Test : RMSE = ' + str(RMSE_e) + ', R-Squared = ' + str(Rsquared_e))
         test_stat_hold.append(('Final', RMSE_e, Rsquared_e))
 
-        writer = WriteCSV(net_weights_dir + 'test_errors_' + dataset_name + '.csv')
-        test_stat_hold >> writer
+        with WriteCSV(net_weights_dir + 'test_errors_' + dataset_name + '.csv') as writer:
+            test_stat_hold >> writer
