@@ -6,9 +6,11 @@ from custom_networks import deep_net, merck_net
 from custom_metric import Rsqured
 import numpy as np
 import pandas as pd
+import keras
 from keras.optimizers import Adam, sgd
 import sys
 import os
+import gc
 
 from config_mod import *
 
@@ -67,6 +69,8 @@ if __name__ == "__main__":
     for dataset_name in dataset_names:
         test_stat_hold = list()
         best_RMSE = float("inf")
+        keras.backend.clear_session()
+        gc.collect()
 
         print('Training on Data-set: ' + dataset_name)
         test_file = save_root + dataset_name + '_test_disguised.csv'
