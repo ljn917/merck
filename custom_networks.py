@@ -8,7 +8,7 @@ def deep_net(input_shape=(128)):
 
     model = models.Sequential()
 
-    model.add(Dense(1024, activation=None, use_bias=False, input_dim=input_shape))
+    model.add(Dense(1024, activation=None, use_bias=False, input_shape=input_shape))
     # model.add(GaussianNoise(0.001))
     model.add(LeakyReLU(alpha=0.3))
     model.add(BatchNormalization(axis=-1, momentum=0.99, epsilon=0.001, center=True, scale=True,
