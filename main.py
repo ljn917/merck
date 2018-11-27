@@ -19,12 +19,6 @@ BATCH_SIZE = 64
 EPOCH = 200
 VAL_FREQ = 5
 NET_ARCH = 'merck_net'
-net_weights_dir = net_weights_root + NET_ARCH + '/'
-
-if not os.path.exists(net_weights_dir):
-    os.makedirs(net_weights_dir)
-elif not os.path.isdir(net_weights_dir):
-    sys.exit('weights output dir: ' + net_weights_dir + ' is not a dir.')
 
 dataset_stats = pd.read_csv(save_root + 'dataset_stats.csv', header=None, names=['mean', 'std'], index_col=0)
 
@@ -66,6 +60,16 @@ def RMSE_np(x, y):
 
 
 if __name__ == "__main__":
+    print('Argument List:', str(sys.argv))
+    if len(sys.argv) > 1:
+        NET_ARCH = sys.argv[1]
+    print('NET_ARCH: ', NET_ARCH)
+    net_weights_dir = net_weights_root + NET_ARCH + '/'
+
+    if not os.path.exists(net_weights_dir):
+        os.makedirs(net_weights_dir)
+    elif not os.path.isdir(net_weights_dir):
+        sys.exit('weights output dir: ' + net_weights_dir + ' is not a dir.')
     for dataset_name in dataset_names:
         test_stat_hold = list()
         best_RMSE = float("inf")
